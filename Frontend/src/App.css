@@ -1,0 +1,37 @@
+/* src/styles/glow-animation.css */
+
+/* --- TRUE MONOCHROMATIC GLOW (White Light vs. Dark Shadow Swirl) --- */
+@keyframes swirl-filter {
+  0% {
+    /* Initial state: Subtle central white light with a faint dark edge */
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)) /* Crisp White Core */
+      drop-shadow(0 0 5px rgba(0, 0, 0, 0.3)); /* Soft Dark Halo */
+    opacity: 0.95;
+  }
+  25% {
+    /* White light shifts up-right, dark shadow shifts down-left (Simulated Swirl) */
+    filter: drop-shadow(2px 2px 6px rgba(255, 255, 255, 1))
+      /* Bright White Shift */ drop-shadow(-2px -2px 8px rgba(0, 0, 0, 0.6)); /* Visible Dark Shift */
+    opacity: 1;
+  }
+  50% {
+    /* White light focuses and spreads (Horizontal Motion) */
+    filter: drop-shadow(-3px 0 8px rgba(255, 255, 255, 0.9))
+      drop-shadow(3px 0 12px rgba(0, 0, 0, 0.4)); /* Widest Dark Spread */
+    opacity: 0.9;
+  }
+  75% {
+    /* White light shifts down-left, dark shadow shifts up-right (Reverse Swirl) */
+    filter: drop-shadow(-2px -2px 6px rgba(255, 255, 255, 1))
+      drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.6));
+    opacity: 1;
+  }
+  100% {
+    /* Return to subtle starting state */
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9))
+      drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+    opacity: 0.95;
+  }
+}
+
+
