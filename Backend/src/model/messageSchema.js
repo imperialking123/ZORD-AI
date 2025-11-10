@@ -1,4 +1,4 @@
-import { Schema, Types } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 const messageSchema = new Schema({
   chatId: Types.ObjectId,
@@ -14,5 +14,10 @@ const messageSchema = new Schema({
   msgType: {
     type: String,
     enum: ["text", "image"],
-  },
+  }, 
 });
+
+const Message = model("message", messageSchema)
+
+
+export default Message

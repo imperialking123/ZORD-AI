@@ -92,6 +92,8 @@ export const handleStartMessage = async (req, res) => {
       },
     });
 
+    const returnObject = {};
+
     const newChat = await Chat.create({
       ownerId: user._id,
       title: titleResponse.text,
@@ -103,7 +105,10 @@ export const handleStartMessage = async (req, res) => {
           text: systemInstruction.defaultText,
         },
       },
+      contents: queryParameters,
     });
+
+    returnObject.chat = newChat.toObject();
   } catch (error) {
     console.log("Error on #handleStartMessage chatController.js", error);
   }
