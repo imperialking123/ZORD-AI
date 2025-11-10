@@ -99,16 +99,23 @@ export const handleStartMessage = async (req, res) => {
       title: titleResponse.text,
     });
 
-    const mainResponse = await ai.models.generateContent({
+    const mainResponse = await ai.models.generateContentStream({
       config: {
         systemInstruction: {
           text: systemInstruction.defaultText,
         },
       },
+      model: "gemini-2.5-flash",
       contents: queryParameters,
     });
 
-    returnObject.chat = newChat.toObject();
+
+    for await (const chunk of mainResponse) {
+
+    }
+
+
+
   } catch (error) {
     console.log("Error on #handleStartMessage chatController.js", error);
   }

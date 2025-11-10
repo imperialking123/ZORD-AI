@@ -10,6 +10,7 @@ const userAuthStore = create(() => ({
   isRunningEmailLookup: false,
 
   authUser: null,
+  socket: null,
 }));
 
 export default userAuthStore;

@@ -5,7 +5,8 @@ const userChatStore = create(() => ({
 
   showSearchPop: false,
 
-  inputText: " ",
+  selectedChat: null,
+
 }));
 
 export default userChatStore;

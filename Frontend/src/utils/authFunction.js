@@ -1,5 +1,6 @@
 import userAuthStore from "@/store/userAuthStore";
 import axiosInstance from "./axiosInstance";
+import { io } from "socket.io-client";
 
 export const getStateToken = async () => {
   userAuthStore.setState({ isFetching: true });
@@ -122,3 +123,29 @@ export const handleEmailLookup = async (email) => {
     userAuthStore.setState({ isRunningEmailLookup: false });
   }
 };
+
+export const connnectSocket = () => {
+
+  const authUser = userAuthStore.getState().authUser
+  const socket = userAuthStore.getState().socket
+
+
+  if (!authUser || socket) return
+
+  const VITE_BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL
+
+
+
+
+  const newSocket = io(VITE_BACKEND_BASE_URL, {
+    withCredentials: true,
+    query: {
+      userId: authUser._id
+    }
+  })
+
+
+
+  userAuthStore.setState({ socket: newSocket })
+  return
+}

@@ -144,7 +144,15 @@ export const handleDiscordAuth = async (req, res) => {
       }
     );
 
-    const { email, id, global_name, username } = profileResponse.data;
+    const { email, id, global_name, username, avatar } = profileResponse.data;
+
+
+
+    const avatarUrl = avatar.startsWith("a_")
+      ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.gif`
+      : `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
+
+
 
     const conditions = [{ provider_id: profileResponse.data.id }];
 
@@ -174,6 +182,9 @@ export const handleDiscordAuth = async (req, res) => {
         loginType: "oauth",
         ...handles,
         role: "user",
+        profile: {
+          avatar: avatarUrl
+        }
       });
 
       console.log("New user created with Discord Auth");
@@ -194,7 +205,6 @@ export const handleCheckAuth = async (req, res) => {
   try {
     const user = req.user;
 
-    console.log(user);
     console.log(`${user.name} refreshed`);
 
     return res.status(200).json(user);

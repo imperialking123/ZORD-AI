@@ -6,7 +6,7 @@ import { useColorModeValue } from "./color-mode";
 const ProfileButton = () => {
   const { authUser } = userAuthStore();
 
-  const bg = useColorModeValue("gray.200", "gray.800");
+  const bg = useColorModeValue("gray.200", "gray.700");
 
   return (
     <Flex
@@ -22,7 +22,7 @@ const ProfileButton = () => {
     >
       <Avatar.Root size="xs">
         <Avatar.Fallback name={authUser.name} />
-        <Avatar.Image src={authUser.profile.avatar} />
+        <Avatar.Image src={authUser.profile?.avatar} />
       </Avatar.Root>
 
       <Flex
