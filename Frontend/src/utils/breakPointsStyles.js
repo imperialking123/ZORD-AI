@@ -4,6 +4,8 @@ const breakPointStyles = {
   RequestLoginRounded: { base: "none", md: "lg", lg: "lg" },
   RequestLoginPadding: { base: "20px 10px", md: "15px 10px", lg: "15px 10px" },
 
+  chatMapContainerPL: { base: "10px", md: "10%", lg: "30%" },
+  chatMapContainerPR: { base: "10px", md: "10%", lg: "30%" },
 };
 
 export default breakPointStyles;

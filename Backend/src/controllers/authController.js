@@ -146,13 +146,9 @@ export const handleDiscordAuth = async (req, res) => {
 
     const { email, id, global_name, username, avatar } = profileResponse.data;
 
-
-
     const avatarUrl = avatar.startsWith("a_")
       ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.gif`
       : `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
-
-
 
     const conditions = [{ provider_id: profileResponse.data.id }];
 
@@ -183,8 +179,8 @@ export const handleDiscordAuth = async (req, res) => {
         ...handles,
         role: "user",
         profile: {
-          avatar: avatarUrl
-        }
+          avatar: avatarUrl,
+        },
       });
 
       console.log("New user created with Discord Auth");
@@ -366,5 +362,28 @@ export const handleGithubAuth = async (req, res) => {
   } catch (error) {
     console.log("Error on #handleGithubAuth authController.js", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUserDetailsWithCookie = async (cookie) => {
+  try {
+    const JWT_SECRET = process.env.JWT_SECRET;
+
+    const verify = jwt.verify(cookie, JWT_SECRET);
+
+    const userId = verify.userId;
+
+    const userDetails = await User.findOne({ _id: userId });
+
+    if (userDetails) return userDetails;
+
+    if (!userDetails) return null;
+  } catch (error) {
+    console.log(
+      "Error on #getUserDetailsFromCookie  error is  ",
+      error.message
+    );
+
+    return null;
   }
 };
