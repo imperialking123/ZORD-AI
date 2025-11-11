@@ -5,8 +5,10 @@ const userChatStore = create(() => ({
 
   showSearchPop: false,
 
+  allChatHistory: [],
   selectedChat: null,
 
+  allMessages: [],
 }));
 
 export default userChatStore;

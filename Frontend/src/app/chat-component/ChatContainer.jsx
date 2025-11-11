@@ -6,16 +6,12 @@ import breakPointStyles from "@/utils/breakPointsStyles";
 
 const ChatContainer = () => {
   return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      w="full"
-      h="full"
-      direction="column"
-    >
+    <Flex w="full" h="100vh" direction="column">
       <ChatTopRibbon />
 
-      <ChatMapContainer />
+      <Flex minHeight="0" w="full">
+        <ChatMapContainer />
+      </Flex>
 
       <Flex
         justifyContent="center"
@@ -25,8 +21,7 @@ const ChatContainer = () => {
         pl={breakPointStyles.inputContainerPL}
         pr={breakPointStyles.inputContainerPR}
       >
-        <InputContainer />
-
+        <InputContainer />{" "}
         <Text
           mt="5px"
           mb="10px"
@@ -42,3 +37,14 @@ const ChatContainer = () => {
 };
 
 export default ChatContainer;
+// <Flex
+//     justifyContent="center"
+//     alignItems="center"
+//     direction="column"
+//     w="full"
+//
+//   >
+//     <InputContainer />
+
+//
+//   </Flex>

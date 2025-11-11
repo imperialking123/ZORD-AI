@@ -28,7 +28,7 @@ const AppContainer = () => {
 
 
   return (
-    <Flex minW="full" minH="full">
+    <Flex  minW="full" minH="full">
       {authUser && <SideBarContainer />}
 
       <Outlet />

@@ -10,6 +10,7 @@ const UserMessage = () => {
       minH="20px"
       alignSelf="flex-end"
       p="10px"
+      flexShrink={0}
       draggable={false}
       onDrag={(e) => e.preventDefault()}
     >

@@ -42,7 +42,22 @@ const InputContainer = () => {
       return;
     }
 
-    
+    const messageArgs = {
+      text: userInput.text,
+      role: "user",
+    };
+
+    messageArgs.type =
+      userInput.text.trim().length > 0 && !imageBase64 ? "text" : "image";
+
+    if (imageBase64) {
+      messageArgs.inlineData = userInput.inlineData;
+    }
+
+    const recentMessages = userChatStore.getState().allMessages;
+
+    userChatStore.setState({ allMessages: [...recentMessages, messageArgs] });
+
     const random = crypto.randomUUID().split("-")[0];
     navigate(`/m/${random}`);
   };
