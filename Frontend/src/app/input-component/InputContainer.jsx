@@ -42,6 +42,7 @@ const InputContainer = () => {
       return;
     }
 
+    
     const random = crypto.randomUUID().split("-")[0];
     navigate(`/m/${random}`);
   };

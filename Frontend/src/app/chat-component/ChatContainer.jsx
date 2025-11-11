@@ -2,6 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import ChatTopRibbon from "./ChatTopRibbon";
 import InputContainer from "../input-component/InputContainer";
 import ChatMapContainer from "./ChatMapContainer";
+import breakPointStyles from "@/utils/breakPointsStyles";
 
 const ChatContainer = () => {
   return (
@@ -20,7 +21,9 @@ const ChatContainer = () => {
         justifyContent="center"
         alignItems="center"
         direction="column"
-        w="65%"
+        w="full"
+        pl={breakPointStyles.inputContainerPL}
+        pr={breakPointStyles.inputContainerPR}
       >
         <InputContainer />
 

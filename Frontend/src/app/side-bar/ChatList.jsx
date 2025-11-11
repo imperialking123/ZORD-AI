@@ -9,7 +9,7 @@ const ChatList = () => {
         size="sm"
         w="full"
       >
-        <Text>Chats</Text>
+        <Text color="fg.muted">Chats</Text>
       </Button>
     </Flex>
   );
