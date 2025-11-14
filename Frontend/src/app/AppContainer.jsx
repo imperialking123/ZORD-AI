@@ -26,6 +26,8 @@ const AppContainer = () => {
     return () => socket.off("connect_error")
   }, [socket])
 
+  const text = ""
+
 
   return (
     <Flex  minW="full" minH="full">

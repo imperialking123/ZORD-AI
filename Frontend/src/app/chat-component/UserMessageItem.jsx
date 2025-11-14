@@ -1,7 +1,6 @@
-import breakPointStyles from "@/utils/breakPointsStyles";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
-const UserMessage = () => {
+const UserMessage = ({ messageData }) => {
   return (
     <Flex
       maxW={{ base: "70%", md: "60%", lg: "55%" }}
@@ -11,11 +10,17 @@ const UserMessage = () => {
       alignSelf="flex-end"
       p="10px"
       flexShrink={0}
-      draggable={false}
-      onDrag={(e) => e.preventDefault()}
+      userSelect="text"
     >
-      Hello what's going on bro any updates comone what's cooking hehe wetin dey
-      xup my guy hope say you dey enjpoy oo
+      {messageData?.text && (
+        <Text
+          _selection={{
+            bg: "blue.600",
+          }}
+        >
+          {messageData.text}
+        </Text>
+      )}
     </Flex>
   );
 };

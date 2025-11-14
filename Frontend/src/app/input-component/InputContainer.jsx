@@ -10,8 +10,8 @@ import userAuthStore from "@/store/userAuthStore";
 import { useNavigate } from "react-router-dom";
 
 const InputContainer = () => {
-  const { authUser } = userAuthStore();
-  const { isSendingRequest } = userChatStore();
+  const { authUser, socket } = userAuthStore();
+  const { isStartingChat, isSendingMessage } = userChatStore();
   const [imageBase64, setImageBase64] = useState(null);
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -19,22 +19,37 @@ const InputContainer = () => {
   const [userInput, setUserInput] = useState({
     inlineData: {
       data: null,
-      mime_type: null,
+      mimeType: null,
     },
     text: "",
   });
-  const isDisabled = userInput.text.trim().length === 0 && !imageBase64;
+  const isDisabled =
+    (userInput.text.trim().length === 0 && !imageBase64) ||
+    isSendingMessage ||
+    isStartingChat;
 
   const handleOnchange = async (event) => {
     const file = event.target.files[0];
 
-    if (!file.mimeType === "image/*") return;
+    const allowed = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
+    if (!file || !allowed.includes(file.type)) return;
     const thumbnail = await imageResizer(file, 200, 200, "JPEG", 0.8);
+    const resized = await imageResizer(file, 1024, 1024, "JPEG", 0.85);
+
+    setUserInput((prev) => ({
+      ...prev,
+      inlineData: {
+        data: resized,
+        mimeType: file.type,
+      },
+    }));
 
     setImageBase64(thumbnail);
   };
 
-  const handleOnclick = () => {
+  const handleSendMessage = () => {
+    if (isSendingMessage || isStartingChat) return;
     if (isDisabled) return;
 
     if (!authUser) {
@@ -42,9 +57,14 @@ const InputContainer = () => {
       return;
     }
 
+    const incomingMessageId = `${crypto.randomUUID().split("-")[0]}-${
+      crypto.randomUUID().split("-")[0]
+    }`;
+
     const messageArgs = {
       text: userInput.text,
       role: "user",
+      incomingMessageId,
     };
 
     messageArgs.type =
@@ -56,9 +76,29 @@ const InputContainer = () => {
 
     const recentMessages = userChatStore.getState().allMessages;
 
-    userChatStore.setState({ allMessages: [...recentMessages, messageArgs] });
+    userChatStore.setState({
+      allMessages: [...recentMessages, messageArgs],
+      isStartingChat: true,
+      isSendingMessage: true,
+      selectedChat: "temp",
+      incomingMessageId: incomingMessageId,
+    });
 
-    const random = crypto.randomUUID().split("-")[0];
+    setUserInput({
+      inlineData: {
+        data: null,
+        mimeType: null,
+      },
+      text: "",
+    });
+    setImageBase64(null);
+
+    socket.emit("start-chat-server", messageArgs);
+
+    const random = `${crypto.randomUUID().split("-")[0]}-${
+      crypto.randomUUID().split("-")[0]
+    } `;
+
     navigate(`/m/${random}`);
   };
   return (
@@ -82,9 +122,16 @@ const InputContainer = () => {
 
       <Flex minW="full">
         <Textarea
-          onChange={(event) =>
-            setUserInput((prev) => ({ ...prev, text: event.target.value }))
-          }
+          onChange={(event) => {
+            setUserInput((prev) => ({ ...prev, text: event.target.value }));
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+
+              handleSendMessage();
+            }
+          }}
           value={userInput.text}
           w="full"
           resize="none"
@@ -113,10 +160,10 @@ const InputContainer = () => {
 
         <IconButton
           disabled={isDisabled}
-          onClick={handleOnclick}
+          onClick={handleSendMessage}
           rounded="full"
         >
-          {isSendingRequest ? (
+          {isSendingMessage || isStartingChat ? (
             <Icon animation="spin">
               <BiLoaderCircle />
             </Icon>

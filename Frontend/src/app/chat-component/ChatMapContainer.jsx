@@ -2,6 +2,8 @@ import { Flex } from "@chakra-ui/react";
 import UserMessage from "./userMessageItem";
 import breakPointStyles from "@/utils/breakPointsStyles";
 import userChatStore from "@/store/userChatStore";
+import IsGettingResponse from "./ai-message-render/IsGettingResponse";
+import AiMessageContainer from "./ai-message-render/AiMessageContainer";
 
 const ChatMapContainer = () => {
   const { allMessages } = userChatStore();
@@ -12,17 +14,22 @@ const ChatMapContainer = () => {
       pr={breakPointStyles.chatMapContainerPR}
       pb="10px"
       w="full"
-      flex="1" // 1. Grow to fill space
-      overflowY="scroll" // 2. Enable internal scrolling
-      minH="0" // 3. CRITICAL: Allows Flexbox to constrain this box
+      flex="1"
+      overflowY="scroll"
+      minH="0"
       direction="column"
       gap="10px"
+      userSelect="text"
     >
-      {allMessages.map((message) => {
-        if (message.role === "user") return <UserMessage />;
-        // You'll want to map the AI message here too:
-        // if (message.role === "ai") return <AiMessage />;
+      {allMessages.map((message, index) => {
+        if (message.role === "user")
+          return <UserMessage messageData={message} key={index} />;
+
+        if (message.role === "model")
+          return <AiMessageContainer key={index} messageData={message} />;
       })}
+
+      <IsGettingResponse />
     </Flex>
   );
 };

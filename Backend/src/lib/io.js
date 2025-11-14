@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cookie from "cookie";
 import cookieParser from "cookie-parser";
 import { getUserDetailsWithCookie } from "../controllers/authController.js";
+import { handleStartMessage } from "../controllers/chatController.js";
 
 export const app = express();
 
@@ -15,7 +16,11 @@ const userSocketMap = new Map();
 
 const userDetailsMap = new Map();
 
-const io = new Server(server, {
+export const getSocketIdWithUserId = (userId) => {
+  return userSocketMap.get(userId.toString());
+};
+
+export const io = new Server(server, {
   cors: {
     origin: FRONTEND_BASE_URL,
     credentials: true,
@@ -43,14 +48,18 @@ io.on("connection", async (socket) => {
   }
 
   const userDetais = await getUserDetailsWithCookie(ZORDAI_COOKIE);
-
   if (!userDetais) socket.disconnect();
-
   userDetailsMap.set(userId, userDetais);
 
-  console.log(userDetailsMap);
+  socket.on("start-chat-server", (args) => {
+    const userDetails = userDetailsMap.get(userId);
 
-  console.log(
-    `New User Connected to Socket. User Id = ${userId}, socketId = ${socket.id} `
-  );
+    if (!userDetails) return;
+    const fullArgs = {
+      ...args,
+      userDetails,
+    };
+
+    handleStartMessage(fullArgs);
+  });
 });
