@@ -4,7 +4,8 @@ import { useEffect } from "react";
 const AiMessageContainer = ({ messageData }) => {
   const md = new MarkdownIt();
 
-  const parser = md.parse(messageData.text);
+  const parser = md.pa
+
 
   return null;
 };
