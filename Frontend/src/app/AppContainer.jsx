@@ -10,27 +10,22 @@ const AppContainer = () => {
 
   useEffect(() => {
     if (authUser) {
-      connnectSocket()
+      connnectSocket();
     }
-  }, [authUser])
+  }, [authUser]);
 
   useEffect(() => {
+    if (!socket) return;
 
-    if (!socket) return
-
-
-    socket.on('connect_error', (err) => {
-      return
+    socket.on("connect_error", (err) => {
+      return;
     });
 
-    return () => socket.off("connect_error")
-  }, [socket])
-
-  const text = ""
-
+    return () => socket.off("connect_error");
+  }, [socket]);
 
   return (
-    <Flex  minW="full" minH="full">
+    <Flex minW="full" minH="full">
       {authUser && <SideBarContainer />}
 
       <Outlet />

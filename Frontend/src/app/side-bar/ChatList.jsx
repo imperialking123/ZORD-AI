@@ -1,6 +1,7 @@
 import { useColorModeValue } from "@/components/ui/color-mode";
 import userChatStore from "@/store/userChatStore";
 import { Flex, Button, Text } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
 const ChatList = () => {
   const { allChatHistory, selectedChat } = userChatStore();
 
@@ -8,8 +9,27 @@ const ChatList = () => {
   const color = useColorModeValue("gray.900", "white");
   const hoverColor = useColorModeValue("gray.300", "gray.700");
 
+  const { chatId } = useParams();
+  const navigate = useNavigate();
+
+  const handleNavigateToChat = (chatData) => {
+    if (chatId && chatId === chatData._id) return;
+    document.title = chatData.title;
+    userChatStore.setState({ selectedChat: chatData });
+    navigate(`/m/${chatData._id.toString()}`);
+  };
+
   return (
-    <Flex direction="column" userSelect="none" mt="10px" w="full" flexGrow={1}>
+    <Flex
+      direction="column"
+      userSelect="none"
+      mt="10px"
+      w="full"
+      flex="1"
+      overflowY="scroll"
+      minH="0"
+      flexGrow={1}
+    >
       <Button
         rounded="md"
         justifyContent="flex-start"
@@ -23,12 +43,14 @@ const ChatList = () => {
       {allChatHistory.length > 0 &&
         allChatHistory.map((chat, index) => (
           <Button
+            value={chat}
+            onClick={() => handleNavigateToChat(chat)}
             bg={chat === selectedChat ? bg : "none"}
             color={color}
             rounded="lg"
             justifyContent="flex-start"
             size="sm"
-            w="full"
+            w="99%"
             _hover={{
               bg: hoverColor,
             }}

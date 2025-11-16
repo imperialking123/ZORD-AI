@@ -1,8 +1,14 @@
-import { model, Schema, Types } from "mongoose";
+import mongoose from "mongoose";
 
-const messageSchema = new Schema({
-  chatId: Types.ObjectId,
-  userId: Types.ObjectId,
+const messageSchema = new mongoose.Schema({
+  chatId: {
+    type: mongoose.Types.ObjectId,
+    ref: "chat",
+  },
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: "user",
+  },
   role: {
     type: String,
     enum: ["user", "model"],
@@ -16,8 +22,9 @@ const messageSchema = new Schema({
     type: String,
     enum: ["TEXT", "IMAGE"],
   },
+  fileId: String,
 });
 
-const Message = model("message", messageSchema);
+const Message = mongoose.model("message", messageSchema);
 
 export default Message;

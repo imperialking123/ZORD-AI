@@ -11,6 +11,7 @@ const UserMessage = ({ messageData }) => {
       p="10px"
       flexShrink={0}
       userSelect="text"
+      mb="15px"
     >
       {messageData?.text && (
         <Text

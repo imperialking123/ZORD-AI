@@ -10,6 +10,8 @@ const userChatStore = create(() => ({
   selectedChat: null,
   incomingMessageId: null,
 
+  isErrorGettingMessage: false,
+  isGettingMessages: false,
   allMessages: [],
 }));
 

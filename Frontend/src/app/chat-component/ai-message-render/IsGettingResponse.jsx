@@ -2,7 +2,7 @@ import { Flex, Image, Spinner, Text } from "@chakra-ui/react";
 import LogoBlack from "@/assets/LogoBlack.svg";
 import LogoWhite from "@/assets/LogoWhite.svg";
 import { useColorModeValue } from "@/components/ui/color-mode";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import userChatStore from "@/store/userChatStore";
 import userAuthStore from "@/store/userAuthStore";
 import { useNavigate } from "react-router-dom";
@@ -14,36 +14,44 @@ const IsGettingResponse = () => {
   const navigate = useNavigate();
   const Logo = useColorModeValue(LogoBlack, LogoWhite);
 
+  const scrollRef = useRef(null);
+
   useEffect(() => {
     if (!isSendingMessage) return;
-    socket.on("receive-message-client", (args) => {
-      const updatedMessages = allMessages.map((message) => {
-        if (
-          message?.incomingMessageId &&
-          message.incomingMessageId === args.incomingMessageId
-        ) {
-          const newMessage = {
-            incomingMessageId: args.incomingMessageId,
-            role: "model",
-            text: (message.text += args.text),
-          };
 
-          return newMessage;
-        } else {
+    const handleReceiveMessage = (args) => {
+      userChatStore.setState((state) => {
+        const updatedMessages = state.allMessages.map((message) => {
+          if (
+            message?.incomingMessageId &&
+            message.incomingMessageId === args.incomingMessageId
+          ) {
+            return {
+              ...message,
+              role: "model",
+              text: message.text + args.text,
+            };
+          }
           return message;
-        }
-      });
-      userChatStore.setState({ allMessages: updatedMessages });
+        });
 
-      if (args.isFinished === true) {
-        userChatStore.setState({ isSendingMessage: false });
-      }
-    });
+        const newState = { allMessages: updatedMessages };
+
+        if (args.isFinished === true) {
+          newState.isSendingMessage = false;
+        }
+
+        return newState;
+      });
+    };
+
+    socket.on("receive-message-client", handleReceiveMessage);
 
     return () => {
-      socket.off("receive-message-client");
+      socket.off("receive-message-client", handleReceiveMessage);
     };
-  }, [isSendingMessage, allMessages, socket]);
+  }, [isSendingMessage, socket]);
+
   useEffect(() => {
     if (!isStartingChat) return;
 
@@ -61,15 +69,23 @@ const IsGettingResponse = () => {
     };
   }, [isStartingChat, allChatHistory, navigate, socket]);
 
+  useEffect(() => {
+    if (scrollRef.current && (isSendingMessage || isStartingChat)) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isSendingMessage, isStartingChat]);
+
   if (isSendingMessage || isStartingChat)
     return (
       <Flex
+        ref={scrollRef}
         gap="15px"
         pointerEvents="none"
         userSelect="none"
         p="10px"
         w="full"
         h="55px"
+        mb="10px"
       >
         <Flex pos="relative" alignItems="center" justifyContent="center">
           <Image src={Logo} w="20px " />

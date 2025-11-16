@@ -20,7 +20,7 @@ export const doRequestWithRetry = async (requestFunction, maxAttempts) => {
         );
       }
 
-      const baseDelayMs = 1000;
+      const baseDelayMs = 2500;
       const delay = baseDelayMs * Math.pow(2, attempts - 1);
 
       console.log(

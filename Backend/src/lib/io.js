@@ -2,9 +2,11 @@ import http from "http";
 import express from "express";
 import { Server } from "socket.io";
 import cookie from "cookie";
-import cookieParser from "cookie-parser";
 import { getUserDetailsWithCookie } from "../controllers/authController.js";
-import { handleStartMessage } from "../controllers/chatController.js";
+import {
+  handleSendMessage,
+  handleStartMessage,
+} from "../controllers/messageController.js";
 
 export const app = express();
 
@@ -61,5 +63,17 @@ io.on("connection", async (socket) => {
     };
 
     handleStartMessage(fullArgs);
+  });
+
+  socket.on("send-chat-server", (args) => {
+    const userDetails = userDetailsMap.get(userId);
+
+    if (!userDetails) return;
+    const fullArgs = {
+      ...args,
+      userDetails,
+    };
+
+    handleSendMessage(fullArgs);
   });
 });

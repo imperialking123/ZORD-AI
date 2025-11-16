@@ -1,28 +1,52 @@
-import { CodeBlock, createShikiAdapter } from "@chakra-ui/react";
-import { memo, useEffect, useState } from "react";
+import { CodeBlock, createShikiAdapter, Skeleton } from "@chakra-ui/react";
+import { memo, useEffect, useRef, useState } from "react";
 
-const CodeRender = ({ className, children }) => {
+const CodeRender = ({ className, children, inline }) => {
   const [language, setLanguage] = useState("text");
-
-  const shikiAdapter = createShikiAdapter({
-    async load() {
-      // Dynamic import remains valid modern JS
-      const { createHighlighter } = await import("shiki");
-      return createHighlighter({
-        langs: [language],
-        themes: ["github-dark", "github-light"],
-      });
-    },
-    theme: "github-light",
-  });
-
-  // const language = /language-(\w+)/.exec(className || "")[1]
+  const [shikiAdapter, setShikiAdapter] = useState(null);
+  const isShikiResolved = useRef(false);
 
   useEffect(() => {
-    if (!className || className === null || className === undefined) return;
+    if (!className || className === null || className === undefined || inline)
+      return;
 
-    console.log(className);
-  }, [children]);
+    const match = /language-(\w+)/.exec(className);
+    const lang = match ? match[1] : "text";
+
+    setLanguage(lang);
+
+    if (shikiAdapter || isShikiResolved.current) return;
+
+    const initializeAdapter = async () => {
+      const { createHighlighter } = await import("shiki");
+
+      const adapter = createShikiAdapter({
+        async load() {
+          return createHighlighter({
+            langs: [lang],
+            themes: ["github-dark", "github-light"],
+          });
+        },
+        theme: "github-light",
+      });
+
+      isShikiResolved.current = true;
+
+      setShikiAdapter(adapter);
+    };
+
+    initializeAdapter();
+    return () => {
+      if (shikiAdapter && shikiAdapter.highlighter) {
+        shikiAdapter.highlighter.dispose();
+      }
+    };
+  }, [className, shikiAdapter, inline]);
+
+  if (!shikiAdapter)
+    return <Skeleton w="full" h="100px" variant="shine" rounded="md" />;
+
+  if (inline) return <code className={className}>{children}</code>;
 
   return (
     <CodeBlock.AdapterProvider value={shikiAdapter}>

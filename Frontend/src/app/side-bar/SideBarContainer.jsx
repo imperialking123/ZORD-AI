@@ -10,6 +10,7 @@ import ChatList from "./ChatList";
 import ProfileButton from "@/components/ui/ProfileButton";
 import { useNavigate } from "react-router-dom";
 import userChatStore from "@/store/userChatStore";
+import "@/assets/stylesheets/thinScrollbar.css";
 
 const SideBarContainer = () => {
   const logoSRC = useColorModeValue(LogoBlack, LogoWhite);
@@ -22,8 +23,8 @@ const SideBarContainer = () => {
     <Flex
       borderRight="1px solid"
       borderColor={useColorModeValue("blackAlpha.200", "whiteAlpha.200")}
-      minW="18%"
-      minH="full"
+      minW="22%"
+      maxH="100vh"
       p="10px"
       direction="column"
       bg={useColorModeValue("gray.50", "gray.950")}

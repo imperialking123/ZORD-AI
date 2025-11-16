@@ -2,14 +2,14 @@ import userChatStore from "@/store/userChatStore";
 import { Flex, Icon, IconButton, Input, Textarea } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { BiLoaderCircle } from "react-icons/bi";
-import { IoArrowForward } from "react-icons/io5";
 import { LuPlus } from "react-icons/lu";
 import ImageRender from "./ImageRender";
 import imageResizer from "@/utils/ImageResizer";
 import userAuthStore from "@/store/userAuthStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { TfiArrowUp } from "react-icons/tfi";
 
-const InputContainer = () => {
+const InputContainer = ({ width }) => {
   const { authUser, socket } = userAuthStore();
   const { isStartingChat, isSendingMessage } = userChatStore();
   const [imageBase64, setImageBase64] = useState(null);
@@ -48,8 +48,9 @@ const InputContainer = () => {
     setImageBase64(thumbnail);
   };
 
+  const { chatId } = useParams();
+
   const handleSendMessage = () => {
-    if (isSendingMessage || isStartingChat) return;
     if (isDisabled) return;
 
     if (!authUser) {
@@ -57,61 +58,99 @@ const InputContainer = () => {
       return;
     }
 
+    if (isSendingMessage || isStartingChat) return;
+
+    userAuthStore.setState({ isStartingChat: true, isSendingMessage: true });
     const incomingMessageId = `${crypto.randomUUID().split("-")[0]}-${
       crypto.randomUUID().split("-")[0]
     }`;
 
-    const messageArgs = {
-      text: userInput.text,
-      role: "user",
-      incomingMessageId,
-    };
+    if (!chatId) {
+      const messageArgs = {
+        text: userInput.text,
+        role: "user",
+      };
 
-    messageArgs.type =
-      userInput.text.trim().length > 0 && !imageBase64 ? "text" : "image";
+      messageArgs.type =
+        userInput.text.trim().length > 0 && !imageBase64 ? "text" : "image";
 
-    if (imageBase64) {
-      messageArgs.inlineData = userInput.inlineData;
+      if (imageBase64) {
+        messageArgs.inlineData = userInput.inlineData;
+      }
+
+      const recentMessages = userChatStore.getState().allMessages;
+
+      userChatStore.setState({
+        allMessages: [...recentMessages, messageArgs],
+        selectedChat: "temp",
+        incomingMessageId: incomingMessageId,
+      });
+
+      setUserInput({
+        inlineData: {
+          data: null,
+          mimeType: null,
+        },
+        text: "",
+      });
+      setImageBase64(null);
+
+      socket.emit("start-chat-server", messageArgs);
+
+      const random = `${crypto.randomUUID().split("-")[0]}-${
+        crypto.randomUUID().split("-")[0]
+      } `;
+
+      navigate(`/m/${random}`);
+    } else {
+      const messageArgs = {
+        text: userInput.text,
+        role: "user",
+        chatId: chatId,
+      };
+
+      messageArgs.type =
+        userInput.text.trim().length > 0 && !imageBase64 ? "text" : "image";
+
+      if (imageBase64) {
+        messageArgs.inlineData = userInput.inlineData;
+      }
+
+      const recentMessages = userChatStore.getState().allMessages;
+
+      userChatStore.setState({
+        allMessages: [...recentMessages, messageArgs],
+        isSendingMessage: true,
+        incomingMessageId: incomingMessageId,
+      });
+
+      setUserInput({
+        inlineData: {
+          data: null,
+          mimeType: null,
+        },
+        text: "",
+      });
+      setImageBase64(null);
+
+      socket.emit("send-chat-server", messageArgs);
+
+      const random = `${crypto.randomUUID().split("-")[0]}-${
+        crypto.randomUUID().split("-")[0]
+      } `;
     }
-
-    const recentMessages = userChatStore.getState().allMessages;
-
-    userChatStore.setState({
-      allMessages: [...recentMessages, messageArgs],
-      isStartingChat: true,
-      isSendingMessage: true,
-      selectedChat: "temp",
-      incomingMessageId: incomingMessageId,
-    });
-
-    setUserInput({
-      inlineData: {
-        data: null,
-        mimeType: null,
-      },
-      text: "",
-    });
-    setImageBase64(null);
-
-    socket.emit("start-chat-server", messageArgs);
-
-    const random = `${crypto.randomUUID().split("-")[0]}-${
-      crypto.randomUUID().split("-")[0]
-    } `;
-
-    navigate(`/m/${random}`);
   };
   return (
-    //Width should be full InputContainer must be container that will measure width
+    //Width should be full InputContainer must have container that will measure width
     <Flex
       _dark={{
         bg: "gray.800",
       }}
       direction="column"
       p="10px"
-      minW="full"
+      minW={width || "full"}
       rounded="3xl"
-      boxShadow="sm"
+      boxShadow="md"
     >
       {imageBase64 && (
         <ImageRender
@@ -137,8 +176,9 @@ const InputContainer = () => {
           resize="none"
           autoresize
           maxH="5lh"
-          size="lg"
-          placeholder="Ask Zord anything"
+          size="md"
+          fontSize="md"
+          placeholder="Ask Zord"
           border="none"
           bg="none"
           _hover={{ bg: "none" }}
@@ -148,11 +188,12 @@ const InputContainer = () => {
         />
       </Flex>
 
-      <Flex w="full" justifyContent="space-between">
+      <Flex pl="10px" pr="10px" w="full" justifyContent="space-between">
         <IconButton
           onClick={() => inputRef.current.click()}
-          rounded="full"
-          variant="ghost"
+          rounded="md"
+          variant="outline"
+          size="sm"
         >
           <LuPlus />
           <Input onChange={handleOnchange} hidden ref={inputRef} type="file" />
@@ -161,14 +202,15 @@ const InputContainer = () => {
         <IconButton
           disabled={isDisabled}
           onClick={handleSendMessage}
-          rounded="full"
+          rounded="md"
+          size="xs"
         >
           {isSendingMessage || isStartingChat ? (
             <Icon animation="spin">
               <BiLoaderCircle />
             </Icon>
           ) : (
-            <IoArrowForward />
+            <TfiArrowUp />
           )}
         </IconButton>
       </Flex>

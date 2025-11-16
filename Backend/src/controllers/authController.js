@@ -5,6 +5,7 @@ import { googleAuthClient } from "../utils/authClients.js";
 import User from "../model/userSchema.js";
 import { generateJWTCookie } from "../utils/generateToken.js";
 import axios from "axios";
+import Chat from "../model/chatSchema.js";
 
 export const handleGoogleAuth = async (req, res) => {
   try {
@@ -78,7 +79,6 @@ export const handleGoogleAuth = async (req, res) => {
         .status(400)
         .json({ message: "Request could not be processed. Please try again." });
     }
-    return res.status(500).json({ message: "Internal Server error" });
   }
 };
 
@@ -201,9 +201,18 @@ export const handleCheckAuth = async (req, res) => {
   try {
     const user = req.user;
 
+    const allChats = await Chat.find({ ownerId: user._id }).sort({
+      createdAt: -1,
+    });
+
     console.log(`${user.name} refreshed`);
 
-    return res.status(200).json(user);
+    const returnArgs = {
+      chats: allChats,
+      authData: user,
+    };
+
+    return res.status(200).json(returnArgs);
   } catch (error) {
     console.log("Error on #handleCheckAuth authController.js", error);
     return res.status(500).json({ message: "Internal server error" });

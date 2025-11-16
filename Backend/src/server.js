@@ -4,12 +4,11 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import chatRoute from "./routes/chatRoute.js";
 import authRoute from "./routes/authRoute.js";
-import ConnectDB from "./utils/db.js";
 import { app, server } from "./lib/io.js";
+import messageRoute from "./routes/messageRoute.js";
+import { ConnectDB } from "./utils/db.js";
 
 config();
-
-
 
 const PORT = process.env.PORT;
 
@@ -22,6 +21,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoute);
 app.use("/api/chat", chatRoute);
+app.use("/api/message", messageRoute);
 
 ConnectDB();
 server.listen(PORT, () => {

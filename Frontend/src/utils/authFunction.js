@@ -1,6 +1,7 @@
 import userAuthStore from "@/store/userAuthStore";
 import axiosInstance from "./axiosInstance";
 import { io } from "socket.io-client";
+import userChatStore from "@/store/userChatStore";
 
 export const getStateToken = async () => {
   userAuthStore.setState({ isFetching: true });
@@ -61,7 +62,8 @@ export const handleDiscordAuth = async (code) => {
 export const handleCheckAuth = async () => {
   try {
     const res = await axiosInstance.get("/auth/check");
-    userAuthStore.setState({ authUser: res.data });
+    userAuthStore.setState({ authUser: res.data.authData });
+    userChatStore.setState({ allChatHistory: res.data?.chats || [] });
   } catch {
     userAuthStore.setState({ authUser: null });
   } finally {
@@ -125,27 +127,20 @@ export const handleEmailLookup = async (email) => {
 };
 
 export const connnectSocket = () => {
+  const authUser = userAuthStore.getState().authUser;
+  const socket = userAuthStore.getState().socket;
 
-  const authUser = userAuthStore.getState().authUser
-  const socket = userAuthStore.getState().socket
+  if (!authUser || socket) return;
 
-
-  if (!authUser || socket) return
-
-  const VITE_BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL
-
-
-
+  const VITE_BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
   const newSocket = io(VITE_BACKEND_BASE_URL, {
     withCredentials: true,
     query: {
-      userId: authUser._id
-    }
-  })
+      userId: authUser._id,
+    },
+  });
 
-
-
-  userAuthStore.setState({ socket: newSocket })
-  return
-}
+  userAuthStore.setState({ socket: newSocket });
+  return;
+};

@@ -1,6 +1,7 @@
 import { connect } from "mongoose";
+import imagekit from "imagekit";
 
-const ConnectDB = async () => {
+export const ConnectDB = async () => {
   try {
     const MONGO_URI = process.env.MONGO_URI;
     const Connector = await connect(MONGO_URI);
@@ -14,4 +15,8 @@ const ConnectDB = async () => {
   }
 };
 
-export default ConnectDB
+export const ImageKitUploader = new imagekit({
+  publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
+  urlEndpoint: process.env.IMAGE_KIT_URL_ENDPOINT,
+});

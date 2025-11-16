@@ -20,14 +20,16 @@ const ChatMapContainer = () => {
       direction="column"
       gap="10px"
       userSelect="text"
+      
     >
-      {allMessages.map((message, index) => {
-        if (message.role === "user")
-          return <UserMessage messageData={message} key={index} />;
+      {allMessages.length > 0 &&
+        allMessages.map((message, index) => {
+          if (message.role === "user")
+            return <UserMessage messageData={message} key={index} />;
 
-        if (message.role === "model")
-          return <AiMessageContainer key={index} messageData={message} />;
-      })}
+          if (message.role === "model")
+            return <AiMessageContainer key={index} messageData={message} />;
+        })}
 
       <IsGettingResponse />
     </Flex>
