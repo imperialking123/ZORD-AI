@@ -1,24 +1,18 @@
-import Markdown from "react-markdown";
-import CodeRender from "./CodeRender";
 import { Flex } from "@chakra-ui/react";
+import MarkdownRenderer from "./ui/MarkDownRenderer";
 
 const AiMessageContainer = ({ messageData }) => {
   return (
     <Flex
-      p="10px"
-      lineHeight="moderate"
       fontFamily="bodyText"
       direction="column"
       gap="10px"
-      mb="10px"
       opacity="0.98"
+      
     >
-      <Markdown
-        children={messageData.text}
-        components={{
-          code: CodeRender,
-        }}
-      ></Markdown>
+      <MarkdownRenderer>
+        {String(messageData.text).replace(/(\[.*?\])/g, "$1\n")}
+      </MarkdownRenderer>
     </Flex>
   );
 };

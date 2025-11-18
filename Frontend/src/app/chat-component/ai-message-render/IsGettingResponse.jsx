@@ -20,29 +20,26 @@ const IsGettingResponse = () => {
     if (!isSendingMessage) return;
 
     const handleReceiveMessage = (args) => {
-      userChatStore.setState((state) => {
-        const updatedMessages = state.allMessages.map((message) => {
-          if (
-            message?.incomingMessageId &&
-            message.incomingMessageId === args.incomingMessageId
-          ) {
-            return {
-              ...message,
-              role: "model",
-              text: message.text + args.text,
-            };
-          }
-          return message;
-        });
+      const allMessages = userChatStore.getState().allMessages;
+      const incomingMessageId = args.incomingMessageId;
 
-        const newState = { allMessages: updatedMessages };
+      const findMessageToModify = allMessages.find(
+        (message) => message.incomingMessageId === incomingMessageId
+      );
 
-        if (args.isFinished === true) {
-          newState.isSendingMessage = false;
-        }
+      const text = findMessageToModify.text + args.text;
 
-        return newState;
+      const newMessage = {
+        ...findMessageToModify,
+        text,
+      };
+
+      userChatStore.setState({
+        allMessages: [...allMessages, newMessage],
       });
+      if (args.isFinished === true) {
+        userChatStore.setState({ isSendingMessage: false });
+      }
     };
 
     socket.on("receive-message-client", handleReceiveMessage);
@@ -84,7 +81,7 @@ const IsGettingResponse = () => {
         userSelect="none"
         p="10px"
         w="full"
-        h="55px"
+        h="70px"
         mb="10px"
       >
         <Flex pos="relative" alignItems="center" justifyContent="center">

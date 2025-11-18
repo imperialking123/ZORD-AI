@@ -15,7 +15,12 @@ const ChatList = () => {
   const handleNavigateToChat = (chatData) => {
     if (chatId && chatId === chatData._id) return;
     document.title = chatData.title;
-    userChatStore.setState({ selectedChat: chatData });
+    userChatStore.setState({
+      selectedChat: chatData,
+      allMessages: [],
+      isStartingChat: false,
+      isSendingMessage: false,
+    });
     navigate(`/m/${chatData._id.toString()}`);
   };
 

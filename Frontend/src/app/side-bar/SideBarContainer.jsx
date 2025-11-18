@@ -19,6 +19,16 @@ const SideBarContainer = () => {
 
   const navigate = useNavigate();
 
+  const handleNewChat = () => {
+    userChatStore.setState({
+      allMessages: [],
+      isStartingChat: false,
+      isSendingMessage: false,
+      selectedChat: null,
+    });
+    navigate("/");
+  };
+
   return (
     <Flex
       borderRight="1px solid"
@@ -82,7 +92,7 @@ const SideBarContainer = () => {
           variant="ghost"
           size="sm"
           w="full"
-          onClick={() => navigate("/", { replace: true })}
+          onClick={handleNewChat}
         >
           <Icon>
             <RxPlusCircled />

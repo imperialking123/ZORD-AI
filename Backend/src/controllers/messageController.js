@@ -45,7 +45,7 @@ export const handleGetAllMessages = async (req, res) => {
       })
       .lean();
 
-    if (!messages)
+    if (messages === null || undefined)
       return res.status(400).json({
         messages: "Messages could not Be Loaded",
         errorName: "FAILED_DATA_LOAD",
@@ -71,7 +71,7 @@ export const handleStartMessage = async (args) => {
     if (text) {
       contents.text = text;
     }
-    if (inlineData) {
+    if (inlineData && inlineData.data) {
       const newInlineData = {
         data: inlineData.data.replace(/^data:image\/\w+;base64,/, ""),
         mimeType: inlineData.mimeType,
@@ -106,6 +106,7 @@ export const handleStartMessage = async (args) => {
       msgType: startChatParsed.userIntent,
       chatId: newChat._id,
       userId: newChat.ownerId,
+      role: "user",
     });
 
     const userSocketId = getSocketIdWithUserId(userDetails._id);
@@ -151,6 +152,10 @@ export const handleStartMessage = async (args) => {
             text: allText,
             msgType: "TEXT",
           });
+
+          console.log(
+            `Finished Streaming Chunk to user with id = ${userDetails._id}`
+          );
 
           break;
         } catch (error) {
@@ -281,7 +286,7 @@ export const handleSendMessage = async (args) => {
           fullTextReponse += chunk.text;
           const chunkObject = {
             text: chunk.text,
-            incomingMessageId,
+            incomingMessageId: incomingMessageId,
             isFinished: chunk.candidates[0].finishReason === "STOP",
           };
 

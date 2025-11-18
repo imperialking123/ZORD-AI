@@ -1,5 +1,5 @@
-import { Flex, Heading, IconButton, Menu } from "@chakra-ui/react";
-import { AiFillDelete } from "react-icons/ai";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import { Flex, Heading } from "@chakra-ui/react";
 
 const ChatTopRibbon = () => {
   return (
@@ -11,14 +11,12 @@ const ChatTopRibbon = () => {
       pl="10px"
       pr="10px"
       minW="full"
+      borderBottom="1px solid"
+      borderColor={useColorModeValue("gray.300", "gray.800")}
     >
       <Heading fontSize="md" fontFamily="zordTitle">
         ZORD
       </Heading>
-
-      <IconButton variant="ghost" size="xs" colorPalette="red">
-        <AiFillDelete />
-      </IconButton>
     </Flex>
   );
 };

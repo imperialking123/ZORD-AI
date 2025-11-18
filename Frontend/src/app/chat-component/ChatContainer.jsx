@@ -21,52 +21,52 @@ const ChatContainer = () => {
     if (!authUser) {
       navigate("/");
     }
-  });
+  }, [authUser, navigate]);
 
   useEffect(() => {
     if (isStartingChat) return;
 
+    const storeHasMessages = userChatStore.getState().allMessages.length > 0;
+    if (storeHasMessages) return;
+
     const getMessagesWrapperFunction = async () => {
-      const getMessageRes = await getMessages(chatId);
+      const res = await getMessages(chatId);
 
-      if (getMessageRes.isError === false) {
-        userChatStore.setState({ allMessages: getMessageRes.data });
-        const findChatwithChatId = userChatStore
+      if (!res.isError) {
+        userChatStore.setState({ allMessages: res.data });
+        const chat = userChatStore
           .getState()
-          .allChatHistory.find((chat) => chat._id === chatId);
-
-        if (findChatwithChatId) {
-          document.title = findChatwithChatId.title;
-          userChatStore.setState({ selectedChat: findChatwithChatId });
+          .allChatHistory.find((c) => c._id === chatId);
+        if (chat) {
+          document.title = chat.title;
+          userChatStore.setState({ selectedChat: chat });
         }
-      } else if (
-        getMessageRes.isError === true &&
-        getMessageRes.errorName !== "FAILED_DATA_LOAD"
-      ) {
-        userChatStore.setState({ allMessages: [] });
+      } else if (res.isError && res.errorName !== "FAILED_DATA_LOAD") {
         navigate("/", { replace: true });
       }
     };
 
-    if (!isStartingChat && chatId) {
-      getMessagesWrapperFunction();
-    }
-  }, [chatId]);
+    if (chatId) getMessagesWrapperFunction();
+  }, [chatId, isStartingChat]);
 
   return (
-    <Flex w="full" h="100vh" direction="column">
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      w="full"
+      h="100vh"
+      direction="column"
+    >
       <ChatTopRibbon />
 
       <ChatMapContainer />
 
       <Flex
-        justifyContent="center"
-        alignItems="center"
         direction="column"
-        pl={breakPointStyles.inputContainerPL}
-        pr={breakPointStyles.inputContainerPR}
+        alignItems="center"
+        width={{ base: "95%", md: "90%", lg: "75%" }}
       >
-        <InputContainer width={{ base: "95%", md: "90%", lg: "100%" }} />
+        <InputContainer />
         <Text mt="5px" mb="10px" color="fg.muted" fontSize="xs">
           ZORD AI can make mistakes. so cross check information
         </Text>
