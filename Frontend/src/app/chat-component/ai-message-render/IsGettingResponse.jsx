@@ -54,7 +54,7 @@ const IsGettingResponse = () => {
 
     socket.on("receive-chat-client", (args) => {
       userChatStore.setState({
-        allChatHistory: [...allChatHistory, args],
+        allChatHistory: [args, ...allChatHistory],
         isStartingChat: false,
         selectedChat: args,
       });

@@ -8,7 +8,7 @@ const CodeRender = ({ match, codeChildren, restProps }) => {
   const clipboard = useClipboard({ value: codeChildren });
 
   return (
-    <Stack bg="gray.950" p="10px" rounded="md">
+    <Stack  bg="gray.950" p="10px" rounded="md">
       <Flex justifyContent="space-between" userSelect="none" w="full">
         <Text fontSize="xs">{match[1]}</Text>
         <IconButton
@@ -25,6 +25,7 @@ const CodeRender = ({ match, codeChildren, restProps }) => {
           backgroundColor: "transparent",
           padding: "0",
           margin: "0",
+
           whiteSpace: "pre-wrap",
         }}
         wrapLongLines

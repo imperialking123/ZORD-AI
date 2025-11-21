@@ -12,6 +12,10 @@ const chatSchema = new Schema(
     howManyImages: Number,
     hasMessage: Boolean,
     tokenUsage: Number,
+    lastActivity: {
+      type: Date,
+      default: new Date(),
+    },
   },
   { timestamps: true }
 );

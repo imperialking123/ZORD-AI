@@ -11,6 +11,9 @@ const userAuthStore = create(() => ({
 
   authUser: null,
   socket: null,
+
+  isShowSideBar: false,
+  showSearchPop: false,
 }));
 
 export default userAuthStore;

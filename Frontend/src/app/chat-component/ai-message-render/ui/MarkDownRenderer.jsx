@@ -1,15 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 
-import CodeRender from "../CodeRender";
+import CodeRender from "./CodeRender";
 
 export default function MarkdownRenderer({ children }) {
-
-
-  
-
   return (
     <Markdown
       remarkPlugins={[remarkGfm]}

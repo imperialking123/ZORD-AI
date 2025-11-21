@@ -12,6 +12,7 @@ import { handleCheckAuth } from "./utils/authFunction";
 import GithubPageContainer from "./pages/auth-pages/GithubPageContainer";
 import NoChatSelected from "./app/NoChatSelected";
 import ChatContainer from "./app/chat-component/ChatContainer";
+import GallerContainer from "./app/gallery-component/GallerContainer";
 
 const App = () => {
   const { authUser, isCheckingAuth } = userAuthStore();

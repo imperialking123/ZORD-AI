@@ -1,5 +1,5 @@
-import { Flex } from "@chakra-ui/react";
-import UserMessage from "./userMessageItem";
+import { Box, Flex } from "@chakra-ui/react";
+import UserMessage from "./user-message-render/UserMessageItem";
 import userChatStore from "@/store/userChatStore";
 import IsGettingResponse from "./ai-message-render/IsGettingResponse";
 import "@/assets/stylesheets/noScrollbar.css";
@@ -11,7 +11,11 @@ const ChatMapContainer = () => {
     <Flex
       pb="10px"
       pt="10px"
-      minW="75%"
+      minW={{
+        base: "98%",
+        lg: "75%",
+        md: "85%",
+      }}
       maxW="75%"
       flex="1"
       overflowY="scroll"
@@ -26,10 +30,12 @@ const ChatMapContainer = () => {
             return <UserMessage messageData={message} key={index} />;
 
           if (message.role === "model")
-            return <AiMessageContainer key={index} messageData={message} />;
+            return <AiMessageContainer  key={index} messageData={message} />;
         })}
 
       <IsGettingResponse />
+
+      <Box minW="full" minH="150px" bg="transparent" />
     </Flex>
   );
 };

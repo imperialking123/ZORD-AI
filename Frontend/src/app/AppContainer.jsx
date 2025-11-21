@@ -4,9 +4,10 @@ import { Outlet } from "react-router-dom";
 import userAuthStore from "@/store/userAuthStore";
 import { useEffect } from "react";
 import { connnectSocket } from "@/utils/authFunction";
+import SearchContainer from "./search-component/SearchContainer";
 
 const AppContainer = () => {
-  const { authUser, socket } = userAuthStore();
+  const { authUser, socket, showSearchPop } = userAuthStore();
 
   useEffect(() => {
     if (authUser) {
@@ -29,6 +30,8 @@ const AppContainer = () => {
       {authUser && <SideBarContainer />}
 
       <Outlet />
+
+      {showSearchPop && <SearchContainer />}
     </Flex>
   );
 };

@@ -13,9 +13,7 @@ import {
 import { motion as Motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { LuX } from "react-icons/lu";
-import LineDividerText from "./LineDividerText";
 import DiscordAuthButton from "@/components/auth-buttons/DiscordAuthButton";
-import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
 import GithubAuthButton from "@/components/auth-buttons/GithubAuthButton";
 
 const RequestLogin = () => {

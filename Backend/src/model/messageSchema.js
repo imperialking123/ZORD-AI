@@ -23,7 +23,13 @@ const messageSchema = new mongoose.Schema({
     enum: ["TEXT", "IMAGE"],
   },
   fileId: String,
+  isFinished: {
+    type: Boolean,
+    default: true,
+  },
 });
+
+messageSchema.index({ text: "text", userId: 1 });
 
 const Message = mongoose.model("message", messageSchema);
 

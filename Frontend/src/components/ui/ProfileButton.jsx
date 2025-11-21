@@ -1,12 +1,12 @@
 import userAuthStore from "@/store/userAuthStore";
-import { Avatar, Flex, IconButton, Text } from "@chakra-ui/react";
+import { Avatar, Flex, IconButton, Tag, Text } from "@chakra-ui/react";
 import { FaGear } from "react-icons/fa6";
 import { useColorModeValue } from "./color-mode";
 
 const ProfileButton = () => {
   const { authUser } = userAuthStore();
 
-  const bg = useColorModeValue("gray.200", "gray.700");
+  const bg = useColorModeValue("gray.200", "gray.900");
 
   return (
     <Flex
@@ -40,9 +40,9 @@ const ProfileButton = () => {
         </Text>
       </Flex>
 
-      <IconButton rounded="full" variant="ghost" size="xs">
-        <FaGear />
-      </IconButton>
+      <Tag.Root size="lg"  rounded="full">
+        <Tag.Label>Beta</Tag.Label>
+      </Tag.Root>
     </Flex>
   );
 };

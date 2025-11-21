@@ -47,7 +47,10 @@ const NoChatSelected = () => {
         textAlign="center"
         fontFamily="zordTitle"
         userSelect="none"
-        fontSize="2xl"
+        fontSize="lg"
+        w={{
+          base: "98%",
+        }}
       >
         {randomText}
       </Heading>

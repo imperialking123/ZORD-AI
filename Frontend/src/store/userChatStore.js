@@ -13,6 +13,10 @@ const userChatStore = create(() => ({
   isErrorGettingMessage: false,
   isGettingMessages: false,
   allMessages: [],
+
+  isSearchingMessages: false,
+
+  scrollTo: null,
 }));
 
 export default userChatStore;

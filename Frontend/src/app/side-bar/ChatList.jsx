@@ -1,4 +1,5 @@
 import { useColorModeValue } from "@/components/ui/color-mode";
+import userAuthStore from "@/store/userAuthStore";
 import userChatStore from "@/store/userChatStore";
 import { Flex, Button, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,6 +22,8 @@ const ChatList = () => {
       isStartingChat: false,
       isSendingMessage: false,
     });
+    userAuthStore.setState({ isShowSideBar: false });
+    speechSynthesis.cancel();
     navigate(`/m/${chatData._id.toString()}`);
   };
 
@@ -48,6 +51,7 @@ const ChatList = () => {
       {allChatHistory.length > 0 &&
         allChatHistory.map((chat, index) => (
           <Button
+            fontWeight="meduim"
             value={chat}
             onClick={() => handleNavigateToChat(chat)}
             bg={chat === selectedChat ? bg : "none"}

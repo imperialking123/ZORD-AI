@@ -2,7 +2,6 @@ import { Flex, Text } from "@chakra-ui/react";
 import ChatTopRibbon from "./ChatTopRibbon";
 import InputContainer from "../input-component/InputContainer";
 import ChatMapContainer from "./ChatMapContainer";
-import breakPointStyles from "@/utils/breakPointsStyles";
 import { useEffect } from "react";
 import userAuthStore from "@/store/userAuthStore";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,7 +10,7 @@ import userChatStore from "@/store/userChatStore";
 
 const ChatContainer = () => {
   const { authUser } = userAuthStore();
-  const { isStartingChat } = userChatStore();
+  const { isStartingChat, scrollTo } = userChatStore();
 
   const navigate = useNavigate();
 
@@ -41,19 +40,23 @@ const ChatContainer = () => {
           document.title = chat.title;
           userChatStore.setState({ selectedChat: chat });
         }
+        if (scrollTo) {
+          const el = document.getElementById(scrollTo);
+          el.scrollIntoView({ behavior: "smooth" });
+        }
       } else if (res.isError && res.errorName !== "FAILED_DATA_LOAD") {
         navigate("/", { replace: true });
       }
     };
 
     if (chatId) getMessagesWrapperFunction();
-  }, [chatId, isStartingChat]);
+  }, [chatId, isStartingChat, scrollTo]);
 
   return (
     <Flex
       justifyContent="center"
       alignItems="center"
-      w="full"
+      minW={{ base: "100%", md: "70%", lg: "80%" }}
       h="100vh"
       direction="column"
     >
@@ -65,9 +68,17 @@ const ChatContainer = () => {
         direction="column"
         alignItems="center"
         width={{ base: "95%", md: "90%", lg: "75%" }}
+        pb={{ base: "10px" }}
       >
         <InputContainer />
-        <Text mt="5px" mb="10px" color="fg.muted" fontSize="xs">
+        <Text
+          textAlign="center"
+          mt="5px"
+          mb="10px"
+          color="fg.muted"
+          fontSize="xs"
+          display={{ base: "none", lg: "inline" }}
+        >
           ZORD AI can make mistakes. so cross check information
         </Text>
       </Flex>

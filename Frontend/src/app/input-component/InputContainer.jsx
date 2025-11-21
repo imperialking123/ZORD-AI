@@ -114,6 +114,20 @@ const InputContainer = ({ width }) => {
       };
 
       const allMessages = userChatStore.getState().allMessages;
+      const allChatHistory = userChatStore.getState().allChatHistory;
+
+      const resolveChatHistory = allChatHistory.map((chat) => {
+        if (chat._id === chatId) {
+          const resolvedChat = {
+            ...chat,
+            lastActivity: new Date(),
+          };
+
+          return resolvedChat;
+        } else {
+          return chat;
+        }
+      });
 
       const resolvedMessages = [
         ...allMessages,
@@ -132,6 +146,7 @@ const InputContainer = ({ width }) => {
         allMessages: resolvedMessages,
         incomingMessageId: incomingMessageId,
         isSendingMessage: true,
+        allChatHistory: resolveChatHistory,
       });
 
       const messageData = {

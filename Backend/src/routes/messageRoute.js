@@ -1,11 +1,13 @@
 import { Router } from "express";
 import protectRoute from "../middleware/protectRoute.js";
-import { handleGetAllMessages } from "../controllers/messageController.js";
+import {
+  handleGetAllMessages,
+  handleSearchMessageOrChat,
+} from "../controllers/messageController.js";
 
 const messageRoute = Router();
 
+messageRoute.get("/all/:chatId", protectRoute, handleGetAllMessages);
+messageRoute.post("/search/chats", protectRoute, handleSearchMessageOrChat);
 
-messageRoute.get("/all/:chatId", protectRoute, handleGetAllMessages)
-
-
-export default messageRoute
+export default messageRoute;

@@ -7,6 +7,7 @@ import { config } from "dotenv";
 import systemInstruction from "../utils/systemInstruction.js";
 import mongoose from "mongoose";
 import { ImageKitUploader } from "../utils/db.js";
+import { response } from "express";
 
 config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -276,6 +277,8 @@ export const handleSendMessage = async (args) => {
     let attempts = 0;
     const maxAttempts = 4;
 
+    let modelResponseWorked = true;
+
     while (attempts < maxAttempts) {
       try {
         const modelResponseStream = await newChat.sendMessageStream({
@@ -295,12 +298,7 @@ export const handleSendMessage = async (args) => {
           }
         }
 
-        const newModelMessage = await Message.create({
-          role: "model",
-          text: fullTextReponse,
-          chatId: chatId,
-          msgType: "TEXT",
-        });
+        modelResponseWorked = true;
 
         break;
       } catch (error) {
@@ -309,8 +307,83 @@ export const handleSendMessage = async (args) => {
         const delay = baseDelayMs * Math.pow(2, attempts - 1);
         console.log("Error using Model attempts ", attempts);
 
+        modelResponseWorked = false;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
+
+    if (modelResponseWorked) {
+      const newModelMessage = await Message.create({
+        role: "model",
+        text: fullTextReponse,
+        chatId: chatId,
+        msgType: "TEXT",
+      });
+
+      await findChat.updateOne({
+        lastActivity: new Date(),
+      });
+    } else {
+      await findChat.updateOne({
+        lastActivity: new Date(),
+      });
+      const chunkObject = {
+        text: "Failed to generate a response. Please try again.",
+        incomingMessageId: incomingMessageId,
+        isFinished: true,
+      };
+
+      io.to(userSocketId).emit("receive-message-client", chunkObject);
+    }
   } catch (error) {}
+};
+
+export const handleSearchMessageOrChat = async (req, res) => {
+  try {
+    const user = req.user;
+    const text = req.body?.text;
+
+    if (!text)
+      return res.status(400).json({ message: "Text is required To search" });
+
+    const searchResults = await Message.find(
+      { userId: user._id, $text: { $search: text } },
+      { score: { $meta: "textScore" }, text: 1 }
+    )
+      .sort({ score: { $meta: "textScore" } })
+      .limit(20)
+      .lean()
+      .populate("chatId");
+
+    const regEx = new RegExp(text, "gi");
+
+    let finalResults = [];
+
+    searchResults.forEach((message) => {
+      const index = message.text.indexOf(text);
+
+      if (index === -1) {
+        return;
+      } else {
+        const start = Math.max(0, index - 45);
+        const end = Math.min(message.text.length, index + text.length + 45);
+
+        const slicedText = message.text.slice(start, end);
+
+        const hightlightedText = slicedText.replace(
+          regEx,
+          `<mark>${text}</mark>`
+        );
+
+        const finishedText = `...${hightlightedText}...`;
+
+        finalResults.push({ ...message, text: finishedText });
+      }
+    });
+
+    return res.status(200).json(finalResults);
+  } catch (error) {
+    console.log("Error on #handleSearchMessage #messageController.js  ", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };

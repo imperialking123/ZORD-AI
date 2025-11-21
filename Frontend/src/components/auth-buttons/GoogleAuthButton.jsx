@@ -1,4 +1,4 @@
-import { Button, Icon, Image, Spinner } from "@chakra-ui/react";
+import { Button, Float, Icon, Image, Spinner, Tag } from "@chakra-ui/react";
 import googleIcon from "@/assets/icon/googleIcon.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useEffect, useState } from "react";
@@ -18,8 +18,8 @@ const GoogleAuthButton = () => {
     redirect_uri,
   });
 
-
   const googleButtonClickHandler = async () => {
+    return;
     if (isFetching) return;
 
     const token = await getStateToken();
@@ -38,11 +38,12 @@ const GoogleAuthButton = () => {
 
   return (
     <Button
-      disabled={isFetching}
+      disabled={true}
       onClick={googleButtonClickHandler}
       size="xl"
       rounded="full"
       variant="surface"
+      pos="relative"
     >
       {isFetching ? (
         <Spinner />
@@ -52,6 +53,12 @@ const GoogleAuthButton = () => {
           Continue with Google{" "}
         </>
       )}
+
+      <Float offsetX="12">
+        <Tag.Root rounded="full" variant="solid" size="sm" colorPalette="red">
+          <Tag.Label>Coming Soon</Tag.Label>
+        </Tag.Root>
+      </Float>
     </Button>
   );
 };
