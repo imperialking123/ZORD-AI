@@ -3,7 +3,7 @@ import InputContainer from "./input-component/InputContainer";
 import breakPointStyles from "@/utils/breakPointsStyles";
 import userAuthStore from "@/store/userAuthStore";
 import RequestLogin from "./modals/RequestLogin";
-import TopRibbon from "@/components/ui/topRibbon";
+import TopRibbon from "@/components/ui/TopRibbon.jsx";
 import { useState } from "react";
 
 const NoChatSelected = () => {
