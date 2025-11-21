@@ -4,7 +4,7 @@ import AppContainer from "./app/AppContainer";
 import userAuthStore from "./store/userAuthStore";
 import GooglePageContainer from "./pages/auth-pages/GooglePageContainer";
 import AuthPageContainer from "./pages/AuthPageContainer";
-import "./app.css";
+import "./App.css";
 import DiscordPageContainer from "./pages/auth-pages/DiscordPageContainer";
 import { GlowLogo } from "./components/logo/Logo";
 import { useEffect } from "react";
@@ -12,7 +12,6 @@ import { handleCheckAuth } from "./utils/authFunction";
 import GithubPageContainer from "./pages/auth-pages/GithubPageContainer";
 import NoChatSelected from "./app/NoChatSelected";
 import ChatContainer from "./app/chat-component/ChatContainer";
-import GallerContainer from "./app/gallery-component/GallerContainer";
 
 const App = () => {
   const { authUser, isCheckingAuth } = userAuthStore();
