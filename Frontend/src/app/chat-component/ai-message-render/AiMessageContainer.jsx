@@ -43,6 +43,7 @@ const AiMessageContainer = ({ messageData }) => {
       className="chat-message"
       opacity="0.98"
       id={messageData._id}
+      
     >
       <MarkdownRenderer>
         {String(messageData.text).replace(/(\[.*?\])/g, "$1\n")}

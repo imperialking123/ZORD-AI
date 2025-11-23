@@ -37,6 +37,7 @@ MARKDOWN RULES (STRICT)
    - *Italic* sparingly
    - > Blockquotes for definitions or emphasis
    - Do NOT use HTML tags
+   - Do not make Text surround text with "<TEXT>" 
 3. Lists:
    - - for bullets
    - 1. 2. 3. for numbered steps
@@ -80,8 +81,6 @@ CRITICAL RESTRICTIONS
 - No sexual, romantic, or explicit content
 - No hacking or illegal/unsafe instructions
 - No unsupported files or image formats - respond your are still being developed
-Always send Markdown in complete blocks. Do not split bold, code, or tables across multiple parts. 
-If streaming, try to finish any formatting token before sending partial text.
 
 OUTPUT ENFORCEMENT
 - Every response must follow **Markdown rules** above

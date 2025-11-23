@@ -34,37 +34,6 @@
   }
 }
 
-.markdown-root h1,
-.markdown-root h2,
-.markdown-root h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0.4rem 0;
-}
-
-.markdown-root hr {
-  border: 0;
-  border-top: 1px solid #333;
-  margin: 0.8rem 0;
-}
-
-.markdown-root p {
-  margin: 0.4rem 0;
-}
-
-.markdown-root ul,
-.markdown-root ol {
-  padding-left: 1.2rem;
-  margin: 0.5rem 0;
-}
-
-.markdown-root code {
-  font-size: 0.9rem;
-  background: #111;
-  padding: 2px 4px;
-  border-radius: 4px;
-}
-
 /* chat-styles.css */
 
 .chat-message {

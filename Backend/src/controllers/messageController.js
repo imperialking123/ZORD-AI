@@ -7,8 +7,6 @@ import { config } from "dotenv";
 import systemInstruction from "../utils/systemInstruction.js";
 import mongoose from "mongoose";
 import { ImageKitUploader } from "../utils/db.js";
-import { response } from "express";
-
 config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -279,11 +277,16 @@ export const handleSendMessage = async (args) => {
 
     let modelResponseWorked = true;
 
+    const instanceId = crypto.randomUUID().split("-")[0];
+
+
     while (attempts < maxAttempts) {
       try {
         const modelResponseStream = await newChat.sendMessageStream({
           message: userContent,
         });
+
+        parser.startParsing()
 
         for await (const chunk of modelResponseStream) {
           fullTextReponse += chunk.text;

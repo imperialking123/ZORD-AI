@@ -21,7 +21,6 @@ const ChatMapContainer = () => {
       overflowY="scroll"
       minH="0"
       direction="column"
-      gap="10px"
       userSelect="text"
     >
       {allMessages.length > 0 &&
