@@ -1,10 +1,10 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
-import logoBlack from "@/assets/logoBlack.svg";
-import logoWhite from "@/assets/logoWhite.svg";
+import { Flex, Image } from "@chakra-ui/react";
+import LogoBlack from "@/assets/LogoBlack.svg";
+import LogoWhite from "@/assets/LogoWhite.svg";
 import { useColorModeValue } from "../ui/color-mode";
 
 export const GlowLogo = () => {
-  const imageSrc = useColorModeValue(logoBlack, logoWhite);
+  const imageSrc = useColorModeValue(LogoBlack, LogoWhite);
 
   return (
     <Flex
