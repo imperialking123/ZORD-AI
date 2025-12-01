@@ -5,6 +5,9 @@ import userAuthStore from "@/store/userAuthStore";
 import RequestLogin from "./modals/RequestLogin";
 import TopRibbon from "@/components/ui/TopRibbon.jsx";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import userChatStore from "@/store/userChatStore";
+import ChatTopRibbon from "./chat-component/ChatTopRibbon";
 
 const NoChatSelected = () => {
   const allRandomText = [
@@ -25,9 +28,14 @@ const NoChatSelected = () => {
     "How would you like to get started?",
   ];
   const { showLoginReminder, authUser, isCheckingAuth } = userAuthStore();
+  const { selectedChat } = userChatStore();
   const randomIndex = Math.floor(Math.random() * allRandomText.length);
 
   const [randomText] = useState(allRandomText[randomIndex]);
+
+  const { chatId } = useParams();
+
+  console.log(chatId);
 
   return (
     <Flex
@@ -42,6 +50,17 @@ const NoChatSelected = () => {
       {showLoginReminder && <RequestLogin />}
 
       {!isCheckingAuth && !authUser && <TopRibbon />}
+
+      {!isCheckingAuth && authUser && !chatId && !selectedChat && (
+        <Flex
+          opacity={{ base: 1, md: "0", lg: "0" }}
+          minW="full"
+          pos="absolute"
+          top="0"
+        >
+          <ChatTopRibbon />
+        </Flex>
+      )}
 
       <Heading
         textAlign="center"

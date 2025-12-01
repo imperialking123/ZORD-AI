@@ -60,6 +60,7 @@ const RequestLogin = () => {
             w={breakPointStyles.RequestLoginWidth}
             rounded={breakPointStyles.RequestLoginRounded}
             h={breakPointStyles.RequestLoginHeight}
+            overflowY="scroll"
             bg={bg}
             padding="15px 10px"
             userSelect="none"

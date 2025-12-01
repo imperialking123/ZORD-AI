@@ -4,8 +4,6 @@ import {
   Icon,
   IconButton,
   Input,
-  Menu,
-  Portal,
   Textarea,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";

@@ -279,14 +279,11 @@ export const handleSendMessage = async (args) => {
 
     const instanceId = crypto.randomUUID().split("-")[0];
 
-
     while (attempts < maxAttempts) {
       try {
         const modelResponseStream = await newChat.sendMessageStream({
           message: userContent,
         });
-
-        parser.startParsing()
 
         for await (const chunk of modelResponseStream) {
           fullTextReponse += chunk.text;
@@ -308,7 +305,7 @@ export const handleSendMessage = async (args) => {
         attempts += 1;
         const baseDelayMs = 4000;
         const delay = baseDelayMs * Math.pow(2, attempts - 1);
-        console.log("Error using Model attempts ", attempts);
+        console.log("Error using Model attempts ", attempts, error);
 
         modelResponseWorked = false;
         await new Promise((resolve) => setTimeout(resolve, delay));
