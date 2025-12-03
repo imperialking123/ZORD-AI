@@ -18,13 +18,14 @@ app.use(
   cors({
     origin: FRONTEND_BASE_URL,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+    allowedHeaders: ["Content-Type","Authorization"]
   })
 );
 
 // Handle OPTIONS preflight
-app.options("*", cors({ origin: FRONTEND_BASE_URL, credentials: true }));
+app.options("/api/*", cors({ origin: FRONTEND_BASE_URL, credentials: true }));
+
 
 app.use(express.json());
 app.use(cookieParser());
