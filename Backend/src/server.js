@@ -14,8 +14,18 @@ const PORT = process.env.PORT;
 
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL;
 console.log("Allowed Frontend Origin:", FRONTEND_BASE_URL);
+app.use(
+  cors({
+    origin: FRONTEND_BASE_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-app.use(cors({ origin: FRONTEND_BASE_URL, credentials: true }));
+// Handle OPTIONS preflight
+app.options("*", cors({ origin: FRONTEND_BASE_URL, credentials: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 
